@@ -67,12 +67,28 @@ function setJamList() {
     removeDropDownList("walikelas-options");
 
     const dataJam = ["Jam Ke-1","Jam Ke-2"];
-
-    addDropDownList("jam", dataJam);
+    const date = new Date(document.getElementById("select-date").value);
+    const currentDate = new Date();
+    currentDate.setHours(7);
+    currentDate.setMinutes(0);
+    currentDate.setSeconds(0);
+    currentDate.setMilliseconds(0);
+    const isNextDate = (date - currentDate) > 0;
+    removeTableRow("table-body");
+    if (isNextDate) {
+        addNoNamesTableRow("table-body",`Tidak bisa mengabsen melebihi tanggal :\n ${currentDate.getDate()}-${currentDate.getMonth()}-${currentDate.getFullYear()} `);
+    } else {
+        addNoNamesTableRow("table-body",`Isi formulir diatas terlebih dahulu...`);
+        addDropDownList("jam", dataJam);   
+    }
 }
+
 async function setTingkatList() {
     removeDropDownList("tingkat-options");
     removeDropDownList("walikelas-options");
+
+    removeTableRow("table-body");
+    addNoNamesTableRow("table-body",`Isi formulir diatas terlebih dahulu...`);
 
     const dataTingkat = await getDataTingkat();
 
@@ -80,6 +96,9 @@ async function setTingkatList() {
 };
 
 function getSelectedTingkatOptions() {
+    removeTableRow("table-body");
+    addNoNamesTableRow("table-body",`Isi formulir diatas terlebih dahulu...`);
+
     var selectedText = getDropDownListSelectedById("tingkat-options");
 
     removeDropDownList("walikelas-options");
