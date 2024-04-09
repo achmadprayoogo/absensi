@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="./index.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <div class="tilte-container">
+            <h1 class="font-inter">Absensi</h1>
+        </div>
+
+        <div class="detail-container">
+            <p class="detail-box"><input type="date" lang="id" name="" id="select-date" onchange="setJamList()"></p>
+            <p class="detail-box" >
+                <select name='time' id="jam" onchange="setTingkatList()">
+                    <option value='1'>-pilih jam-</option>
+                </select>
+            </p>
+            <p class="detail-box" >
+                <select name='classes' id="tingkat-options" onchange="getSelectedTingkatOptions()">
+                    <option value='1'>-pilih tingkat-</option>
+                </select>
+            </p>
+            <p class="detail-box">
+                <select name='teachers' id="walikelas-options" onchange="getSelectedWalikelasOptions()">
+                    <option value='1'>-pilih walikelas-</option>
+                </select>
+            </p>
+        </div>
+        <div class="table-container" >
+            <table rules="rows" id="table-body">
+                <tr>
+                    <td>Isi formulir diatas terlebih dahulu...</td>
+                </tr>
+            </table>
+        </div>
+        <div class="invisible" id="info">
+            <table rules="rows" id="table-info">
+            </table>
+        </div>
+        <button type="button" id="button" onclick="buttonClicked()">Hubungi Admin?</button>
+        <a class="help" href="https://wa.me/6285155001137">bantuan / kritik / saran ?</a>
+    </div>
+</body>
+</html>
