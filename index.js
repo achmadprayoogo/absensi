@@ -65,6 +65,7 @@ function setJamList() {
     removeDropDownList("jam");
     removeDropDownList("tingkat-options");
     removeDropDownList("walikelas-options");
+    setButtonText("Hubungi Admin?");
 
     const dataJam = ["Jam Ke-1","Jam Ke-2"];
     const date = new Date(document.getElementById("select-date").value);
@@ -91,8 +92,14 @@ async function setTingkatList() {
     addNoNamesTableRow("table-body",`Isi formulir diatas terlebih dahulu...`);
 
     const dataTingkat = await getDataTingkat();
+    console.log(dataTingkat);
 
-    addDropDownList("tingkat-options", dataTingkat);
+    if (dataTingkat.message) {
+        removeTableRow("table-body");
+        addNoNamesTableRow("table-body",dataTingkat.message);
+    } else {
+        addDropDownList("tingkat-options", dataTingkat);
+    };
 };
 
 function getSelectedTingkatOptions() {
@@ -145,16 +152,16 @@ async function getSelectedWalikelasOptions() {
 
             if (element.data_absensi == null) {
                 addTableRow( i + 1, element.id, element.nama_lengkap, null);
-                changeButtonText("Kirim");
+                setButtonText("Kirim");
             } else {
                 addTableRow( i + 1, element.id, element.nama_lengkap, element.data_absensi.absensi);
-                changeButtonText("Update");
+                setButtonText("Update");
             }
         }       
 
     } else {
         addNoNamesTableRow("table-body",dataKelasNames.message);
-        changeButtonText("Hubungi Admin?");
+        setButtonText("Hubungi Admin?");
     }    
 }
  
@@ -219,13 +226,11 @@ async function buttonClicked() {
                     if (addData.data_saved.length > 0) {
                         removeTableRow("table-info");
                         addNoNamesTableRow("table-info","Berhasil dikirim...");
-                        btn.textContent = "Update";
+                        setButtonText("Update")
                     } else {
                         removeTableRow("table-info");
                         addNoNamesTableRow("table-info","Absen tidak berhasil...");
                     }
-    
-    
                         break;
     
                 case "Update":
@@ -257,11 +262,7 @@ async function buttonClicked() {
             removeTableRow("table-info");
             addNoNamesTableRow("table-info","Gagal! Data absen belum lengkap!");
         }
-
-        
-    }
-    
-    
+    }    
 }
 
 /**----------------------Other Tools------------------ */
@@ -281,33 +282,39 @@ async function getDataTingkat() {
         });
 
         json = await getData(`${URL}?${params}`);
-        dataArray = Object.keys(json.data_kelas);
 
         var tingkatArray = [];
 
-        var index = 0;
-        dataArray.map(function(key) {
+        if (json.data_kelas) {
+            dataArray = Object.keys(json.data_kelas);
 
-            var texts = key.split('_');
-            let text;
+            var index = 0;
+            dataArray.map(function(key) {
 
-            for (let i = 0; i < keyText.length; i++) {
-                const element = keyText[i];
-                if (texts[0] === keyText[i]) {
-                    text = expectText[i] + " " + texts[1].toUpperCase();
+                var texts = key.split('_');
+                let text;
+
+                for (let i = 0; i < keyText.length; i++) {
+                    const element = keyText[i];
+                    if (texts[0] === keyText[i]) {
+                        text = expectText[i] + " " + texts[1].toUpperCase();
+                    }
                 }
-            }
-            tingkatArray.push(text);
-        })
-        
-        tingkatArray.sort(function(a, b) {
-            var numberA = parseInt(a.split(" ")[0]);// ambil string awal
-            var numberB = parseInt(b.split(" ")[0]);// ambil string awal
-            console.log("a : " + numberA + " | b : " + numberB);
-            return numberA - numberB; 
-        });
+                tingkatArray.push(text);
+            })
+            
+            tingkatArray.sort(function(a, b) {
+                var numberA = parseInt(a.split(" ")[0]);// ambil string awal
+                var numberB = parseInt(b.split(" ")[0]);// ambil string awal
+                console.log("a : " + numberA + " | b : " + numberB);
+                return numberA - numberB; 
+            });
 
-        return tingkatArray;
+            return tingkatArray;
+        } else {
+            return json;
+        }
+        
     } catch (error) {
         console.log( "terjadi kesalahan" + error)
     }
@@ -472,15 +479,15 @@ function removeTableRow(id) {
     tableBody.innerHTML = ''; // Menghapus semua elemen <tr>
 }
 
-function changeButtonText(text) {
-    const btn = document.getElementById("button");
-    btn.innerText = text
-}
-
 function getDropDownListSelectedById(id) {
     const dropDown = document.getElementById(id);
     let index = dropDown.selectedIndex;
     const optionSelected = dropDown.options[index].textContent;
     console.log(optionSelected)
     return optionSelected;
+}
+
+function setButtonText(text) {
+    const button = document.getElementById("button");
+    button.textContent = text;
 }
